@@ -40,7 +40,7 @@ class _RenderHomeScreen extends StatelessWidget {
     return Row(
       children: [
         Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             buildMenuButton('Clock', 'assets/icons/clock_icon.png'),
             buildMenuButton('Alarm', 'assets/icons/alarm_icon.png'),
@@ -131,22 +131,37 @@ class _RenderHomeScreen extends StatelessWidget {
     );
   }
 
-  Padding buildMenuButton(String title, String image) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: TextButton(
-        onPressed: () {},
+
+
+  Widget buildMenuButton(String title, String image) {
+  return ConstrainedBox(
+    constraints: const BoxConstraints.tightFor(width: 120),
+    child: TextButton(
+      onPressed: () {},
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        backgroundColor: const Color.fromARGB(255, 192, 40, 50),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero, // Set border radius to zero
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
         child: Column(
           children: [
             Image.asset(
               image,
               scale: 1.5,
             ),
+            const SizedBox(
+              height: 16.0,
+            ),
             Text(title,
                 style: const TextStyle(color: Colors.white54, fontSize: 14)),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
