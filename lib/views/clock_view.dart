@@ -1,27 +1,20 @@
-import 'dart:async';
 import 'dart:math';
 
+import 'package:clock_app/store/time/store_time.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class ClockView extends StatefulWidget {
   final double size;
-  const ClockView({super.key, required this.size});
+  final DateTimeStore dateTimeStore = DateTimeStore();
+
+  ClockView({super.key, required this.size});
 
   @override
   State<ClockView> createState() => _ClockViewState();
 }
 
 class _ClockViewState extends State<ClockView> {
-  @override
-  void initState() {
-    super.initState();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // ignore: sized_box_for_whitespace
@@ -30,15 +23,20 @@ class _ClockViewState extends State<ClockView> {
       child: SizedBox(
         width: widget.size,
         height: widget.size,
-        // color: Colors.white,
-        child: CustomPaint(painter: ClockPainter()),
+        child: Observer(builder: (_){
+          return CustomPaint(painter: ClockPainter(dateTime: widget.dateTimeStore.currentDateTime));
+        },)
       ),
     );
   }
 }
 
 class ClockPainter extends CustomPainter {
-  var dateTime = DateTime.now();
+  final DateTime dateTime;
+
+  ClockPainter({required this.dateTime});
+
+  // var dateTime = DateTime.now();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -96,9 +94,13 @@ class ClockPainter extends CustomPainter {
     canvas.drawLine(center, Offset(minHandX, minHandY), minHandBrush);
 
     var hourHandX = centerX +
-        radius * 0.4 * cos((dateTime.hour * 30 + dateTime.minute * 0.5) * pi / 180);
+        radius *
+            0.4 *
+            cos((dateTime.hour * 30 + dateTime.minute * 0.5) * pi / 180);
     var hourHandY = centerX +
-        radius * 0.4 * sin((dateTime.hour * 30 + dateTime.minute * 0.5) * pi / 180);
+        radius *
+            0.4 *
+            sin((dateTime.hour * 30 + dateTime.minute * 0.5) * pi / 180);
     canvas.drawLine(center, Offset(hourHandX, hourHandY), hourHandBrush);
 
     // on top all

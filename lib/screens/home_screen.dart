@@ -2,10 +2,10 @@ import 'package:clock_app/theme/theme.dart';
 import 'package:clock_app/utils/enums.dart';
 import 'package:clock_app/utils/menu_items.dart';
 import 'package:clock_app/views/clock_view.dart';
+import 'package:clock_app/widgets/display_timezone.dart';
 import 'package:clock_app/widgets/menu_info.dart';
-import 'package:clock_app/widgets/time.dart';
+import 'package:clock_app/widgets/display_time.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -33,13 +33,6 @@ class _RenderHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
-
-    var formattedDate = DateFormat('EEE, d MMM').format(now);
-    var timezoneString = now.timeZoneOffset.toString().split('.').first;
-    var offsetSign = '';
-    if (!timezoneString.startsWith('-')) offsetSign = '+';
-
     return Row(
       children: [
         Column(
@@ -47,7 +40,7 @@ class _RenderHomeScreen extends StatelessWidget {
           children: menuItems.map((item) => buildMenuButton(item)).toList(),
         ),
         VerticalDivider(thickness: 1, color: AppTheme.colors.dividerColor),
-        MainBody(formattedDate: formattedDate, offsetSign: offsetSign, timezoneString: timezoneString),
+        const MainBody(),
       ],
     );
   }
@@ -97,16 +90,7 @@ class _RenderHomeScreen extends StatelessWidget {
 }
 
 class MainBody extends StatelessWidget {
-  const MainBody({
-    super.key,
-    required this.formattedDate,
-    required this.offsetSign,
-    required this.timezoneString,
-  });
-
-  final String formattedDate;
-  final String offsetSign;
-  final String timezoneString;
+  const MainBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +99,7 @@ class MainBody extends StatelessWidget {
         builder: (BuildContext context, MenuInfo value, Widget? child) {
           if (value.menuType == MenuType.clock) {
             return ClockPage(context);
-          }else{
+          } else {
             return Text(value.menuType.toString());
           }
         },
@@ -126,82 +110,81 @@ class MainBody extends StatelessWidget {
   // ignore: non_constant_identifier_names
   Container ClockPage(BuildContext context) {
     return Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: Text('Clock',
-                      style: TextStyle(
-                        color: AppTheme.colors.primaryTextColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'avenir',
-                      )),
-                ),
-                const Flexible(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DisplayTime(),
-                    ],
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Flexible(
+              flex: 1,
+              fit: FlexFit.tight,
+              child: Text('Clock',
+                  style: TextStyle(
+                    color: AppTheme.colors.primaryTextColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'avenir',
+                  )),
+            ),
+            Flexible(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DisplayTime(
+                    format: 'HH:mm',
+                    style: const TextStyle(color: Colors.white, fontSize: 64),
                   ),
+                ],
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: DisplayTime(
+                format: 'EEE, d MMM',
+                style: TextStyle(
+                  color: AppTheme.colors.primaryTextColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'avenir',
                 ),
-                Flexible(
-                  flex: 1,
-                  child: Text(formattedDate,
-                      style: TextStyle(
-                        color: AppTheme.colors.primaryTextColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'avenir',
-                      )),
+              ),
+            ),
+            Flexible(
+                flex: 5,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: ClockView(
+                    size: MediaQuery.of(context).size.height / 4,
+                  ),
+                )),
+            Flexible(
+              flex: 1,
+              child: Text(
+                'Timezone',
+                style: TextStyle(
+                  color: AppTheme.colors.primaryTextColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'avenir',
                 ),
-                Flexible(
-                    flex: 5,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: ClockView(
-                        size: MediaQuery.of(context).size.height / 4,
-                      ),
-                    )),
-                Flexible(
-                  flex: 1,
-                  child: Text(
-                    'Timezone',
-                    style: TextStyle(
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.language, color: AppTheme.colors.primaryTextColor),
+                  const SizedBox(width: 16),
+                  DisplayTimezone(style: TextStyle(
                       color: AppTheme.colors.primaryTextColor,
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'avenir',
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.language,
-                          color: AppTheme.colors.primaryTextColor),
-                      const SizedBox(width: 16),
-                      Text(
-                        // ignore: prefer_interpolation_to_compose_strings
-                        'UTC' + offsetSign + timezoneString,
-                        style: TextStyle(
-                          color: AppTheme.colors.primaryTextColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'avenir',
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ]),
-        );
+                    ))
+                ],
+              ),
+            )
+          ]),
+    );
   }
 }
