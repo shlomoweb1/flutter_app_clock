@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:kosher_dart/kosher_dart.dart';
 import 'package:mobx/mobx.dart';
 
 part 'store_time.g.dart';
@@ -8,10 +9,14 @@ class DateTimeStore = _DateTimeStore with _$DateTimeStore;
 abstract class _DateTimeStore with Store {
   @observable
   DateTime currentDateTime = DateTime.now();
+  JewishDate jewishDate = JewishDate();
+  JewishCalendar jewishCalendar = JewishCalendar();
 
   @action
   void updateDateTime() {
     currentDateTime = DateTime.now();
+    jewishDate.setDate(currentDateTime);
+    jewishCalendar.setDate(currentDateTime);
   }
 
   _DateTimeStore() {

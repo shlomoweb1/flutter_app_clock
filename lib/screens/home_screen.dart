@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:clock_app/theme/theme.dart';
 import 'package:clock_app/utils/enums.dart';
 import 'package:clock_app/utils/menu_items.dart';
 import 'package:clock_app/views/clock_view.dart';
+import 'package:clock_app/widgets/display_hebrew_date.dart';
+import 'package:clock_app/widgets/display_hebrew_parsha.dart';
 import 'package:clock_app/widgets/display_timezone.dart';
 import 'package:clock_app/widgets/menu_info.dart';
 import 'package:clock_app/widgets/display_time.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -22,7 +24,9 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Color(0xFF2D2F41),
       body: Material(
         type: MaterialType.transparency,
-        child: _RenderHomeScreen(),
+        child: SingleChildScrollView(
+          child: _RenderHomeScreen(),
+        ),
       ),
     );
   }
@@ -62,7 +66,8 @@ class _RenderHomeScreen extends StatelessWidget {
                   : Colors.transparent,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(32)), // Set border radius to zero
+                  topRight: Radius.circular(32),
+                ),
               ),
             ),
             child: Padding(
@@ -76,9 +81,13 @@ class _RenderHomeScreen extends StatelessWidget {
                   const SizedBox(
                     height: 16.0,
                   ),
-                  Text(currentMenuInfo.title,
-                      style: TextStyle(
-                          color: AppTheme.colors.dividerColor, fontSize: 14)),
+                  Text(
+                    currentMenuInfo.title,
+                    style: TextStyle(
+                      color: AppTheme.colors.dividerColor,
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -97,70 +106,94 @@ class MainBody extends StatelessWidget {
     return Expanded(
       child: Consumer<MenuInfo>(
         builder: (BuildContext context, MenuInfo value, Widget? child) {
-          if (value.menuType == MenuType.clock) {
-            return ClockPage(context);
-          } else {
-            return Text(value.menuType.toString());
-          }
+          return value.menuType == MenuType.clock
+              ? clockPage(context)
+              : Center(
+                  child: Text(
+                    value.menuType.toString(),
+                    style: TextStyle(
+                      color: AppTheme.colors.primaryTextColor,
+                      fontSize: 20,
+                    ),
+                  ),
+                );
         },
       ),
     );
   }
 
-  // ignore: non_constant_identifier_names
-  Container ClockPage(BuildContext context) {
+  Container clockPage(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Flexible(
-              flex: 1,
-              fit: FlexFit.tight,
-              child: Text('Clock',
-                  style: TextStyle(
-                    color: AppTheme.colors.primaryTextColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    fontFamily: 'avenir',
-                  )),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            'Clock',
+            style: TextStyle(
+              color: AppTheme.colors.primaryTextColor,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'avenir',
             ),
-            Flexible(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DisplayTime(
-                    format: 'HH:mm',
-                    style: const TextStyle(color: Colors.white, fontSize: 64),
-                  ),
-                ],
-              ),
+          ),
+          const SizedBox(height: 16),
+          DisplayTime(
+            format: 'HH:mm',
+            style: const TextStyle(color: Colors.white, fontSize: 64),
+          ),
+          const SizedBox(height: 16),
+          DisplayTime(
+            format: 'EEE, d MMM',
+            style: TextStyle(
+              color: AppTheme.colors.primaryTextColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'avenir',
             ),
-            Flexible(
-              flex: 1,
-              child: DisplayTime(
-                format: 'EEE, d MMM',
-                style: TextStyle(
-                  color: AppTheme.colors.primaryTextColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'avenir',
-                ),
-              ),
+          ),
+          const SizedBox(height: 16),
+          DisplayHebrewParsha(
+            style: TextStyle(
+              color: AppTheme.colors.primaryTextColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'avenir',
             ),
-            Flexible(
-                flex: 5,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: ClockView(
-                    size: MediaQuery.of(context).size.height / 4,
-                  ),
-                )),
-            Flexible(
-              flex: 1,
-              child: Text(
-                'Timezone',
+          ),
+          const SizedBox(height: 16),
+          DisplayHebrewDate(
+            style: TextStyle(
+              color: AppTheme.colors.primaryTextColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'avenir',
+            ),
+          ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.center,
+            child: ClockView(
+              size: MediaQuery.of(context).size.height / 4,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Timezone',
+            style: TextStyle(
+              color: AppTheme.colors.primaryTextColor,
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'avenir',
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.language, color: AppTheme.colors.primaryTextColor),
+              const SizedBox(width: 8),
+              DisplayTimezone(
                 style: TextStyle(
                   color: AppTheme.colors.primaryTextColor,
                   fontSize: 24,
@@ -168,23 +201,10 @@ class MainBody extends StatelessWidget {
                   fontFamily: 'avenir',
                 ),
               ),
-            ),
-            Flexible(
-              flex: 1,
-              child: Row(
-                children: <Widget>[
-                  Icon(Icons.language, color: AppTheme.colors.primaryTextColor),
-                  const SizedBox(width: 16),
-                  DisplayTimezone(style: TextStyle(
-                      color: AppTheme.colors.primaryTextColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'avenir',
-                    ))
-                ],
-              ),
-            )
-          ]),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
