@@ -21,12 +21,15 @@ class _ClockViewState extends State<ClockView> {
     return Transform.rotate(
       angle: -pi / 2,
       child: SizedBox(
-        width: widget.size,
-        height: widget.size,
-        child: Observer(builder: (_){
-          return CustomPaint(painter: ClockPainter(dateTime: widget.dateTimeStore.currentDateTime));
-        },)
-      ),
+          width: widget.size,
+          height: widget.size,
+          child: Observer(
+            builder: (_) {
+              return CustomPaint(
+                  painter: ClockPainter(
+                      dateTime: widget.dateTimeStore.currentDateTime));
+            },
+          )),
     );
   }
 }
@@ -115,7 +118,84 @@ class ClockPainter extends CustomPainter {
       var x2 = centerX + innerCircleRadius * cos(i * pi / 180);
       var y2 = centerX + innerCircleRadius * sin(i * pi / 180);
 
-      canvas.drawLine(Offset(x1, y1), Offset(x2, y2), dashBrush);
+      if (i == 0 ||
+          i == 12 ||
+          i == 360 - 12 ||
+          i == 84 ||
+          i == 96 ||
+          i == 180 ||
+          i == 180 + 12 ||
+          i == 180 - 12 ||
+          i == 180 + 84 ||
+          i == 180 + 96) {
+        if (i == 0) {
+          TextSpan span = const TextSpan(
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              text: '12');
+          TextPainter tp = TextPainter(
+              text: span,
+              textAlign: TextAlign.left,
+              textDirection: TextDirection.ltr);
+          tp.layout();
+
+          canvas.save();
+          canvas.translate(x1 + 5, y1 - 10);
+          canvas.rotate(90 * pi / 180); // Rotate 90 degrees to the right
+          tp.paint(canvas, Offset.zero);
+          canvas.restore();
+        }
+        if (i == 180) {
+          TextSpan span = const TextSpan(
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              text: '6');
+          TextPainter tp = TextPainter(
+              text: span,
+              textAlign: TextAlign.left,
+              textDirection: TextDirection.ltr);
+          tp.layout();
+
+          canvas.save();
+          canvas.translate(x1 + 15 , y1 -5 );
+          canvas.rotate(90 * pi / 180); // Rotate 90 degrees to the right
+          tp.paint(canvas, Offset.zero);
+          canvas.restore();
+        }
+        if (i == 96) {
+          TextSpan span = const TextSpan(
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              text: '3');
+          TextPainter tp = TextPainter(
+              text: span,
+              textAlign: TextAlign.left,
+              textDirection: TextDirection.ltr);
+          tp.layout();
+
+          canvas.save();
+          canvas.translate(x1 + 20, y1 - 10);
+          canvas.rotate(90 * pi / 180); // Rotate 90 degrees to the right
+          tp.paint(canvas, Offset.zero);
+          canvas.restore();
+        }
+
+        if (i == 180+96) {
+          TextSpan span = const TextSpan(
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              text: '9');
+          TextPainter tp = TextPainter(
+              text: span,
+              textAlign: TextAlign.left,
+              textDirection: TextDirection.ltr);
+          tp.layout();
+
+          canvas.save();
+          canvas.translate(x1 , y1 -5 );
+          canvas.rotate(90 * pi / 180); // Rotate 90 degrees to the right
+          tp.paint(canvas, Offset.zero);
+          canvas.restore();
+        }
+      } else {
+        canvas.drawLine(Offset(x1, y1), Offset(x2, y2), dashBrush);
+      }
     }
   }
 
