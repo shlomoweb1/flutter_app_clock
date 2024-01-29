@@ -40,7 +40,7 @@ class _RenderHomeScreen extends StatelessWidget {
     return Row(
       children: [
         Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buildMenuButton('Clock', 'assets/icons/clock_icon.png'),
             buildMenuButton('Alarm', 'assets/icons/alarm_icon.png'),
@@ -140,7 +140,7 @@ class _RenderHomeScreen extends StatelessWidget {
       onPressed: () {},
       style: TextButton.styleFrom(
         padding: const EdgeInsets.only(left: 20, right: 20),
-        backgroundColor: const Color.fromARGB(255, 192, 40, 50),
+        backgroundColor: title == 'Clock' ?const Color.fromARGB(255, 192, 40, 50) : Colors.transparent,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero, // Set border radius to zero
         ),
