@@ -1,5 +1,9 @@
 import 'package:clock_app/screens/home_screen.dart';
+import 'package:clock_app/theme/theme.dart';
+import 'package:clock_app/utils/enums.dart';
+import 'package:clock_app/widgets/menu_info.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +18,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: AppTheme.colors.pageBackgroundColor),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ChangeNotifierProvider<MenuInfo>(
+        create: (BuildContext context) => MenuInfo(MenuType.clock, title: 'Clock', imageSource: 'assets/icons/clock_icon.png'),
+        child: const MyHomePage(),
+      ),
     );
   }
 }
